@@ -93,7 +93,7 @@ export async function register(prevState: any, formData: FormData) {
     });
 
     await createSession(user.userId);
-    redirect("/dashboard");
+    redirect("/posts");
 
 }
 

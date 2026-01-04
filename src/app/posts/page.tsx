@@ -1,11 +1,16 @@
 import { PostRepository } from "@/src/repositories/post.repository";
-import PostCard from "../../components/cards/postCard";
 import { NewPostButton } from "@/src/components/buttons/newPostButton";
 import { GetUsersButton } from "@/src/components/buttons/getUsersButton";
 import { UserRepository } from "@/src/repositories/user.repository";
 import { getCurrentUser } from "@/src/lib/actions";
+import PostCard from "../../components/cards/postCard";
+import { isSessionExpired } from "@/src/lib/session";
+import { redirect } from "next/navigation";
 
 export default async function PostsPage() {
+  if(await isSessionExpired()) {
+    redirect("/login");
+  }
   const [posts, users, currentUser] = await Promise.all([
     PostRepository.getAllPosts(),
     UserRepository.getAllUsers(),

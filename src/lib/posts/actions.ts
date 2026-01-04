@@ -6,8 +6,14 @@ import { redirect } from "next/navigation";
 import { User } from "@/src/generated/prisma/browser";
 import { revalidatePath } from "next/cache";
 import { getTranslatedPost } from "./translate";
+import { isSessionExpired } from "../session";
 
 export async function createPostAction(formData: FormData) {
+  
+   if(await isSessionExpired()) {
+      redirect("/login");
+    }
+
   const user : User | null = await getCurrentUser();
 
   if (!user) {
@@ -21,12 +27,19 @@ export async function createPostAction(formData: FormData) {
     throw new Error("Invalid input");
   }
 
+ 
+
   await PostRepository.createPost(user.userId, title, content);
 
   redirect("/posts");
 }
 
 export async function deletePostAction(postId: string) {
+
+  if(await isSessionExpired()) {
+    redirect("/login");
+  }
+
   const user = await getCurrentUser();
 
   if(!user) {

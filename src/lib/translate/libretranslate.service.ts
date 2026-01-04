@@ -27,7 +27,7 @@ export async function translate(
     return data.translatedText as string;
   } catch (err) {
     console.error("LibreTranslate error:", err);
-    return "";
+    return text;
   }
 }
 

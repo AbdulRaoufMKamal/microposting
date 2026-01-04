@@ -9,9 +9,18 @@ export default async function UsersPage() {
       <h1>All Users</h1>
 
       {users.map((user) => (
-        <div key={user.userId} style={{ padding: 8 }}>
-          <Link href={`/users/${user.userId}`}>
-            {user.name ?? user.email}
+        <div key={user.userId} style={{ padding: 8, listStyle: "none" }} className="list-item">
+          <Link
+            key={user.userId}
+            href={`/users/${user.userId}`}
+            className="user-item"
+          >
+            <div className="name">
+              {user.name ?? "Unnamed User"}
+            </div>
+            <div className="email">
+              {user.email}
+            </div>
           </Link>
         </div>
       ))}

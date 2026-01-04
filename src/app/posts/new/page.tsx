@@ -2,22 +2,28 @@ import { createPostAction } from "@/src/lib/posts/actions";
 
 export default function NewPostPage() {
   return (
-    <form action={createPostAction} style={{ maxWidth: 400 }}>
+    <form action={createPostAction} className="form">
       <h1>Create Post</h1>
 
-      <input
-        name="title"
-        placeholder="Title"
-        required
-      />
+      <div className="form-field">
+        <input
+          name="title"
+          placeholder="Title"
+          required
+        />
+      </div>
 
-      <textarea
-        name="content"
-        placeholder="Write your post..."
-        required
-      />
+      <div className="form-field">
+        <textarea
+          name="content"
+          placeholder="Write your post..."
+          required
+        />
+      </div>
 
-      <button type="submit">Post</button>
+      <button type="submit" className="primary">
+        Post
+      </button>
     </form>
   );
 }

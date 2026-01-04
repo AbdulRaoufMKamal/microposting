@@ -17,7 +17,7 @@ export async function getTranslatedPost(
   const translated = await translate(text, language);
 
   // 3) Store in cache
-  if(translated)
+  if(translated === text)
     await PostTranslationRepository.createPostTranslation(postId, language, translated);
 
   return translated;
