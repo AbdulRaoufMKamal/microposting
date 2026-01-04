@@ -1,4 +1,5 @@
-const LIBRE_URL = "http://localhost:5000/translate";
+const TRANSLATE_URL =
+  process.env.TRANSLATE_API_URL || "http://localhost:5000";
 
 export async function translate(
   text: string,
@@ -6,7 +7,7 @@ export async function translate(
   sourceLang: string = "auto"
 ) {
   try {
-    const res = await fetch(LIBRE_URL, {
+    const res = await fetch(TRANSLATE_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

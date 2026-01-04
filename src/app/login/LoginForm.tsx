@@ -1,43 +1,73 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { login } from "../../lib/actions";
+import Toast from "@/src/components/Toast";
 
 export function LoginForm() {
-    const [state, loginAction] = useActionState(login, undefined);
+  const [state, loginAction] = useActionState(login, undefined);
+  const [toast, setToast] = useState<string | null>(null);
 
-    return (
-        <form action={loginAction} className="flex max-w-[300px] flex-col gap-2">
+  // Show toast on login failure
+  useEffect(() => {
+    if (state?.message) {
+      setToast(state.message);
+    }
+  }, [state]);
 
-            <div className="flex flex-col gap-2">
-                <input id="email" name="email" placeholder="Email" />
-            </div>
-            {state?.errors?.email && (
-                <p className="text-red-500">{state.errors.email}</p>
-            )}
+  return (
+    <>
+      <form action={loginAction} className="form">
+        <h1>Login</h1>
 
-            <div className="flex flex-col gap-2">
-                <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    placeholder="Password" />
-            </div>
-            {state?.errors?.password && (
-                <p className="text-red-500">{state.errors.password}</p>
-            )}
-            <SubmitButton />
-        </form>
-    )
+        <div className="form-field">
+          <label htmlFor="email">Email</label>
+          <input id="email" name="email" />
+          {/* {state?.errors?.email && (
+            <small style={{ color: "var(--danger)" }}>
+              {state.errors.email}
+            </small>
+          )} */}
+        </div>
+
+        <div className="form-field">
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+          />
+          {/* {state?.errors?.password && (
+            <small style={{ color: "var(--danger)" }}>
+              {state.errors.password}
+            </small>
+          )} */}
+        </div>
+
+        <SubmitButton />
+      </form>
+
+      {toast && (
+        <Toast
+          message={toast}
+          onClose={() => setToast(null)}
+        />
+      )}
+    </>
+  );
 }
 
 function SubmitButton() {
-    const { pending } = useFormStatus();
+  const { pending } = useFormStatus();
 
-    return (
-        <button disabled={pending} type="submit">
-            Login
-        </button>
-    );
+  return (
+    <button
+      type="submit"
+      className="primary"
+      disabled={pending}
+    >
+      {pending ? "Logging in..." : "Login"}
+    </button>
+  );
 }

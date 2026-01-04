@@ -30,6 +30,7 @@ export async function login(prevState: any, formData: FormData) {
 
     if (!result.success) {
         return {
+            message: "Invalid email or password",
             errors: result.error.flatten().fieldErrors,
         }
     }
@@ -41,13 +42,12 @@ export async function login(prevState: any, formData: FormData) {
     const isValid = await bcrypt.compare(password, user?.passwordHash);
 
 
-    if (!isValid || !user) {
+    if (!user || !isValid) {
         return {
-            errors: {
-                email: ["Invalid email or password"],
-            }
-        }
+            message: "Invalid email or password",
+        };
     }
+
 
     await createSession(user.userId);
     redirect("/posts");
@@ -65,8 +65,9 @@ export async function register(prevState: any, formData: FormData) {
     const result = registerSchema.safeParse(Object.fromEntries(formData));
 
     if (!result.success) {
+        const errors = result.error.flatten().fieldErrors;
         return {
-            errors: result.error.flatten().fieldErrors,
+            message: errors.name?.[0] || errors.email?.[0] || errors.password?.[0]
         }
     }
 
@@ -76,9 +77,7 @@ export async function register(prevState: any, formData: FormData) {
 
     if (existingUser) {
         return {
-            errors: {
-                email: ["Email already registered"]
-            }
+            message: "User already exists",
         }
     }
 

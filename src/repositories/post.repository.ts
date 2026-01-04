@@ -1,5 +1,5 @@
 import prisma from "@/src/prisma/client";
-import { User, Post } from "@/src/generated/prisma/client";
+import { Post } from "@/src/generated/prisma/client";
 
 export class PostRepository {
 

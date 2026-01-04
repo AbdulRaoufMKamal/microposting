@@ -1,36 +1,56 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { register } from "../../lib/actions";
+import Toast from "@/src/components/Toast";
 
 export function RegisterForm() {
     const [state, registerAction] = useActionState(register, undefined);
+    const [toast, setToast] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (state?.message) {
+            setToast(state.message);
+        }
+    }, [state]);
 
     return (
-        <form action={registerAction} className="flex max-w-[300px] flex-col gap-2">
-            <div className="flex flex-col gap-2">
-                <input id="name" name="name" placeholder="Name" />
+        <form action={registerAction} className="form">
+            <h1>Register</h1>
+            <div className="form-field">
+                <label htmlFor="name">Name</label>
+                <input id="name" name="name" />
             </div>
-            <div className="flex flex-col gap-2">
-                <input id="email" name="email" placeholder="Email" />
-            </div>
-            {state?.errors?.email && (
-                <p className="text-red-500">{state.errors.email}</p>
-            )}
 
-            <div className="flex flex-col gap-2">
+            <div className="form-field">
+                <label htmlFor="email">Email</label>
+                <input id="email" name="email" />
+            </div>
+
+            <div className="form-field">
+                <label htmlFor="password">Password</label>
                 <input
                     id="password"
                     name="password"
                     type="password"
-                    placeholder="Password" />
+                />
+                {/* {state?.errors?.password && (
+            <small style={{ color: "var(--danger)" }}>
+              {state.errors.password}
+            </small>
+          )} */}
             </div>
-            {state?.errors?.password && (
-                <p className="text-red-500">{state.errors.password}</p>
-            )}
             <SubmitButton />
+            {toast && (
+        <Toast
+          message={toast}
+          onClose={() => setToast(null)}
+        />
+      )}
         </form>
+
+        
     )
 }
 
@@ -39,7 +59,7 @@ function SubmitButton() {
 
     return (
         <button disabled={pending} type="submit">
-            Register
+            {pending ? "Registering..." : "Register"}
         </button>
     );
 }

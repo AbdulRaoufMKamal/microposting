@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { UserRepository } from "@/src/repositories/user.repository";
-
+export const dynamic = "force-dynamic";
 export default async function UsersPage() {
   const users = await UserRepository.getAllUsers();
 

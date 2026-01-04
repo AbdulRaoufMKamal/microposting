@@ -2,6 +2,7 @@ import { PostRepository } from "@/src/repositories/post.repository";
 import PostCard from "@/src/components/cards/postCard";
 import { getCurrentUser } from "@/src/lib/actions";
 import Link from "next/link";
+import { UserRepository } from "@/src/repositories/user.repository";
 
 export default async function UserPostsPage({
   params,
@@ -13,7 +14,7 @@ export default async function UserPostsPage({
   const [posts, firstPost, user] = await Promise.all([
     PostRepository.getUserPosts(userId),
     PostRepository.getUserFirstPost(userId),
-    getCurrentUser(),
+    UserRepository.getUserById(userId),
   ]);
 
   return (
