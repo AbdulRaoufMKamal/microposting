@@ -5,22 +5,36 @@ import { translatePostAction } from "@/src/lib/posts/actions";
 import { Post, User } from "@/src/generated/prisma/client";
 import DeletePostButton from "@/src/components/buttons/deletePostButton";
 import { getCurrentUser } from "@/src/lib/actions";
+import Toast from "../Toast";
 
-export default function PostCard({ post, user, isCurrentUser } : {post : Post, user?: User | null, isCurrentUser?: boolean}) {
+export default function PostCard({ post, user, isCurrentUser }: { post: Post, user?: User | null, isCurrentUser?: boolean }) {
 
   const [language, setLanguage] = useState("es");
   const [translated, setTranslated] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   async function handleTranslate() {
-    setLoading(true);
-    const result = await translatePostAction(post.postId, language);
-    setTranslated(result);
-    setLoading(false);
+    try {
+      setLoading(true);
+      setError(null);
+      const textContent = post.content ?? "";
+      const result = await translatePostAction(post.postId, language);
+
+      if (!result || result === textContent) {
+        throw new Error("Translation failed");
+      }
+
+      setTranslated(result);
+    } catch (err) {
+      setError("Translation failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-   <article className="card space-y-3">
+    <article className="card space-y-3">
       <h3 style={{ fontSize: "1.1rem", fontWeight: 600 }}>
         {post.title}
       </h3>
@@ -83,7 +97,14 @@ export default function PostCard({ post, user, isCurrentUser } : {post : Post, u
             className="danger"
           />
         )}
+
       </div>
+      {error && (
+        <Toast
+          message={error}
+          onClose={() => setError(null)}
+        />
+      )}
     </article>
   );
 }
